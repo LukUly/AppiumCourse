@@ -1,0 +1,7 @@
+{
+  "PlatformName": "Andriod",
+  "Uri": "http://localhost:4723/",
+  "Package": "ru.dns.shop.android",
+  "WaitingTimeSeconds": 60,
+  "LogPath": "C:\\Users\\Dimulka\\Documents\\GitHub\\AppiumCourse\\src\\log.txt"
+}
