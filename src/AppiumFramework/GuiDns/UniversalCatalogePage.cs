@@ -16,7 +16,7 @@ namespace AppiumFramework.GuiDns
         private readonly Button FilterButton = new Button(By.XPath("//*[contains(@resource-id,'filter_button')]"),
             "Кнопка Фильтр");
 
-        public UniversalCatalogePage(string name) : base(By.XPath(String.Format(_universalPageLocator, name)),
+        public UniversalCatalogePage(string name) : base(By.XPath(string.Format(_universalPageLocator, name)),
            name)
         { }
 

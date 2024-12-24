@@ -39,12 +39,12 @@ namespace AppiumFramework.DnsTests.Models
         }
         private static string ExtractCode(string name)
         {
-            string pattern = @"[(.*?)]";
+            string pattern = @"\[[^\]]+\]";
             Match match = Regex.Match(name, pattern);
 
             if (match.Success)
             {
-                return match.Groups[1].Value;
+                return match.Groups[0].Value;
             }
             else 
             {

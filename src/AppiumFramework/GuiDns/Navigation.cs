@@ -19,14 +19,15 @@ namespace AppiumFramework.GuiDns
 
         private static int ExtractNotificationCount(Button button)
         {
+            button = new Button(button.Locator, "Кнопка c уведомлением");
             var message = button.GetContentDesc();
-            string pattern = @"(d+)s+новоеs+уведомление";
+            string pattern = @"\b\d+\b";
 
             Match match = Regex.Match(message, pattern);
 
             if (match.Success)
             {
-                return int.Parse(match.Groups[1].Value);
+                return int.Parse(match.Groups[0].Value);
             }
 
             return 0;

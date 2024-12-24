@@ -86,7 +86,7 @@ namespace AppiumFramework.Core.Base
             try
             {
                 LogManager.LogDebug($"Чтение свойства {name} из элемента {_elementName}.");
-                return Element.GetProperty(name);
+                return Element.GetAttribute(name);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,26 @@
 {
-  "PlatformName": "Andriod",
   "Uri": "http://localhost:4723/",
   "Package": "ru.dns.shop.android",
-  "WaitingTimeSeconds": 60,
-  "LogPath": "C:\\Users\\Dimulka\\Documents\\GitHub\\AppiumCourse\\src\\log.txt"
+  //Ориентация не меняется на DNS
+  //"Package": "com.android.chrome",
+  "WaitingTimeSeconds": 300,
+  "LogPath": "Logs",
+  "LogName": "log.txt",
+  "ScreenshotFolder": "Screenshots",
+  "LogFormat": "${longdate}|${level:uppercase=true}|${message}",
+  "Capabilities": [
+    {
+      "Name": "orientation",
+      "Value": "PORTRAIT"
+//    "Value": "LANDSCAPE"
+    },
+    {
+      "Name": "platformName",
+      "Value": "Andriod"
+    },
+    {
+      "Name": "noReset",
+      "Value": "false"
+    }
+  ]
 }

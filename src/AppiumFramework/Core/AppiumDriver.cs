@@ -1,4 +1,5 @@
 ﻿using AppiumFramework.Core.Config;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
@@ -22,8 +23,11 @@ namespace AppiumFramework.Core
                             AutomationName = AutomationName.AndroidUIAutomator2
                         };
 
-                        options.AddAdditionalAppiumOption(MobileCapabilityType.PlatformName, ConfigManager.Config.PlatformName);
-
+                        var capabilities = ConfigManager.Config.Capabilities;
+                        foreach ( var capability in capabilities) 
+                        {
+                            options.AddAdditionalAppiumOption(capability.Name, capability.Value);
+                        }
                         var uri = new Uri(ConfigManager.Config.Uri);
 
                         _instance = new AndroidDriver(uri, options);

@@ -39,7 +39,6 @@ namespace AppiumFramework.Core
         {
             try
             {
-                //WaitManager.WaitForElementToBeVisible(locator);
                 return AppiumDriver.Instance.FindElements(locator).ToList();
             }
             catch (Exception ex)

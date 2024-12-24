@@ -27,11 +27,12 @@ namespace AppiumFramework.DnsTests.Tests
 
             LogManager.Step("3. Перейти в меню 'Аксессуары и услуги > Для мобильных устройств > Карты памяти'", () =>
             {
-                _newPage = new CatalogIteractions()
-                    .Add(() => CatalogIteractions.ClickCatalogItem("Аксессуары и услуги"), "Аксессуары и услуги")
-                    .Add(() => CatalogIteractions.ClickCatalogItem("Для мобильных устройств"), "Для мобильных устройств")
-                    .Add(() => CatalogIteractions.ClickCatalogItem("Карты памяти"), "Карты памяти")
-                    .Execute();
+                var catalogIteractions = new CatalogIteractions();
+                foreach (var item in TestDataManager.TestData.ProductCatalogeModel.MenuItems) 
+                {
+                    catalogIteractions.Add(() => CatalogIteractions.ClickCatalogItem(item), item);
+                }
+                _newPage = catalogIteractions.Execute();
 
                 AssertLogger.That(_newPage.IsDisplayed, $"Отражается страница '{_newPage}'.");
             });
@@ -44,16 +45,18 @@ namespace AppiumFramework.DnsTests.Tests
 
             LogManager.Step("5. В пункте 'Объём ГБ' выбрать указанный в ТК объём, нажать 'Применить'", () =>
             {
-                DnsGui.FilterPage.SelectFilter("Объем (ГБ)");
-                DnsGui.FilterPage.CheckItems(new string[] { "128" });
+                var volume = TestDataManager.TestData.ProductCatalogeModel.CardVolume;
+                var filter = TestDataManager.TestData.ProductCatalogeModel.FilterText;
+                DnsGui.FilterPage.SelectFilter(filter);
+                DnsGui.FilterPage.CheckItems(new string[] { volume });
                 DnsGui.FilterPage.ClickApplyButton();
 
                 AssertLogger.That(_newPage.IsDisplayed, $"Отражается страница '{_newPage}'.");
 
                 var products = _newPage.GetProductsInfo();
-                var isExpected = products.Any(p => !p.ProductName.Contains("128"));
+                var isExpected = products.All(prod => prod.ProductName.Contains(volume));
 
-                AssertLogger.That(isExpected, $"Отражаются товары нужного объема {"128"}.");
+                AssertLogger.That(isExpected, $"Отражаются товары нужного объема {volume}.");
 
                 _product = products.First();
             });
@@ -77,10 +80,12 @@ namespace AppiumFramework.DnsTests.Tests
                 DnsGui.ProductPage.ClickBuyButton();
 
                 var buttonText = DnsGui.ProductPage.GetBuyButtonText();
-                AssertLogger.That(buttonText.Equals("В корзине"), $"Кнопка изменилась на '{""}'");
+                AssertLogger.That(buttonText.Equals(TestDataManager.TestData.ProductCatalogeModel.NewBuyButtonText), 
+                    $"Кнопка изменилась на '{TestDataManager.TestData.ProductCatalogeModel.NewBuyButtonText}'");
                 var productsCount = DnsGui.Navigation.GetBasketCount();
-                AssertLogger.That(productsCount.Equals(1), 
-                    $"Рядом с иконкой корзины в меню появилось число с количеством товаров в корзине - '{1}'");
+                AssertLogger.That(productsCount.Equals(TestDataManager.TestData.ProductCatalogeModel.CountBasketItems), 
+                    $"Рядом с иконкой корзины в меню появилось число с количеством товаров в корзине - " +
+                    $"'{TestDataManager.TestData.ProductCatalogeModel.CountBasketItems}'");
             });
 
             LogManager.Step("9. Нажать на кнопку корзины в нижнем меню", () =>
@@ -111,14 +116,13 @@ namespace AppiumFramework.DnsTests.Tests
                 LogManager.Step("10.2. Подтвердить удаление товара из корзины", () =>
                 {
                     DnsGui.DeletePermissionPage.ClickPositiveButton();
-                    var productInfo = DnsGui.BasketPage.GetProductsInfo().FirstOrDefault();
 
                     Assert.Multiple(() =>
                     {
                         AssertLogger.That(DnsGui.BasketPage.IsSnackBarPresented(),
                             $"Появился снек-бар(уведомление снизу) о том, что товар удалён.");
                         AssertLogger.That(DnsGui.BasketPage.IsBasketEmpty(), "Корзина пуста.");
-                        AssertLogger.That((productInfo is null),
+                        AssertLogger.That((DnsGui.BasketPage.GetProductsInfo().FirstOrDefault() is null),
                             $"Товар1 больше не отображается на странице.");
                     });
                 });

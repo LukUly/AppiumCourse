@@ -13,20 +13,22 @@ namespace AppiumFramework.Core
 
     public static class LogManager
     {
-        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
         public static void Step(string stepDescription, Action action)
         {
-            Log(LogLevel.Info, $"");
             Log(LogLevel.Info, $"Начало шага: {stepDescription}");
             try
             {
                 action.Invoke();
                 Log(LogLevel.Info, $"Выполнен шаг: {stepDescription}");
+                TakeScreenshot();
             }
             catch (Exception ex)
             {
                 Log(LogLevel.Error, $"Ошибка в шаге '{stepDescription}': {ex.Message}");
+                TakeScreenshot();
                 throw;
             }
         }
@@ -36,16 +38,16 @@ namespace AppiumFramework.Core
             switch (level)
             {
                 case LogLevel.Debug:
-                    Logger.Debug(message);
+                    _logger.Debug(message);
                     break;
                 case LogLevel.Info:
-                    Logger.Info(message);
+                    _logger.Info(message);
                     break;
                 case LogLevel.Warning:
-                    Logger.Warn(message);
+                    _logger.Warn(message);
                     break;
                 case LogLevel.Error:
-                    Logger.Error(message);
+                    _logger.Error(message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
@@ -58,10 +60,16 @@ namespace AppiumFramework.Core
 
         public static void LogError(string message) => Log(LogLevel.Error, message);
 
+        public static void TakeScreenshot() 
+        {
+            var logFilePath = Path.Combine(Path.Combine(_userPath, ConfigManager.Config.LogPath), ConfigManager.Config.ScreenshotFolder);
+            CreateDirectoryIfNotExists(logFilePath);
+            ScreenShotHelper.CaptureScreenshot(logFilePath);
+        }
 
         public static void ConfigureLogging(bool logToFile = true, string logFilePath = null, bool logToConsole = false)
         {
-            logFilePath ??= ConfigManager.Config.LogPath;
+            logFilePath ??= Path.Combine(Path.Combine(_userPath, ConfigManager.Config.LogPath), ConfigManager.Config.LogName);
             var config = new NLog.Config.LoggingConfiguration();
 
             if (logToFile)
@@ -69,7 +77,7 @@ namespace AppiumFramework.Core
                 var fileTarget = new NLog.Targets.FileTarget("fileTarget")
                 {
                     FileName = logFilePath,
-                    Layout = "${longdate}|${level:uppercase=true}|${message}"
+                    Layout = ConfigManager.Config.LogFormat
                 };
 
                 config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, fileTarget);
@@ -79,13 +87,21 @@ namespace AppiumFramework.Core
             {
                 var consoleTarget = new NLog.Targets.ConsoleTarget("consoleTarget")
                 {
-                    Layout = "${longdate}|${level:uppercase=true}|${message}"
+                    Layout = ConfigManager.Config.LogFormat
                 };
 
                 config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, consoleTarget);
             }
 
             NLog.LogManager.Configuration = config;
+        }
+
+        private static void CreateDirectoryIfNotExists(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace AppiumFramework.GuiDns
     public class ProductPage : BasePage
     {
         private Label ProductNameLabel = new Label(By.XPath("//*[contains(@resource-id,'product_title_text')]"), "Название продукта");
-        private Label ProductPriceLabel = new Label(By.XPath("//*[contains(@resource-id,'price_card')]//*[contains(@resource-id,'price_layout')]"), 
+        private Label ProductPriceLabel = new Label(By.XPath("//*[contains(@resource-id,'price_card')]//*[contains(@resource-id,'current_price_text')]"), 
             "Цена продукта");        
         
         private Button ProductToBasketButton = new Button(By.XPath("//*[contains(@resource-id,'buy_button')]"), 

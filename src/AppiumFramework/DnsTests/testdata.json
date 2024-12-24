@@ -2,5 +2,16 @@
   "FirstAppLoadDataModel": {
     "ExpectedSettlement": "Москва",
     "ExpectedNotificationText": "to send you notifications"
+  },
+  "ProductCatalogeModel": {
+    "NewBuyButtonText": "В корзине",
+    "CountBasketItems": 1,
+    "CardVolume": "128",
+    "FilterText": "Объем (ГБ)",
+    "MenuItems": [
+      "Аксессуары и услуги",
+      "Для мобильных устройств",
+      "Карты памяти"
+    ]
   }
 }

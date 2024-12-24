@@ -8,28 +8,24 @@ namespace AppiumFramework
 {
     public static class WaitManager
     {
-        public static void WaitForElementToBeVisible(BaseElement element)
-        {
-            new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds))
-                .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(element.Locator));
-        }
+        private static WebDriverWait _wait;
 
         public static void WaitForElementToBeVisible(By locator)
         {
-            new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds))
-                .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(locator));
+            _wait ??= new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds));
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(locator));
         }
 
         public static void WaitForElementToDisappear(BaseElement element)
         {
-            new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds))
-                .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(element.Locator));
+            _wait ??= new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds));
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(element.Locator));
         }
 
         public static void WaitForAlertToBePresent()
         {
-            new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds))
-                .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.AlertIsPresent());
+            _wait ??= new WebDriverWait(AppiumDriver.Instance, TimeSpan.FromSeconds(ConfigManager.Config.WaitingTimeSeconds));
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.AlertIsPresent());
         }
     }
 }
